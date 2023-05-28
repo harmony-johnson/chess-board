@@ -4,8 +4,10 @@ import GlobalStyle from "./components/styles/Global"
 
 const theme = {
   background: "#14213d",
-  light: "white",
-  alt: "gray"
+  light: "lightgreen",
+  alt: "brown",
+  border: "black",
+  selected: "blue"
 }
 
 function App() {

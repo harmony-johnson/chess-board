@@ -16,13 +16,18 @@ export const StyledSlot = styled.div`
         border: ${
             (props) => {
                 if (props.children) {
-                    return "5px solid brown"
+                    return `5px solid ${props.theme.border}`
                 }
             }};
     }
+
+    &.active {
+        border: ${props => `5px solid ${props.theme.border}`} ;
+        background-color: lightblue;
+    }
 `
 export const LabelCol = styled.div`
-    background-color: brown;
+    background-color: ${props => props.theme.border};
     width: 12.5%;
     height: 20px;
     display: flex;
@@ -31,7 +36,7 @@ export const LabelCol = styled.div`
     justify-content: center;
 `
 export const LabelRow = styled.div`
-    background-color: brown;
+    background-color: ${props => props.theme.border};
     width: 20px;
     height: 12.05%;
     display: flex;
@@ -45,7 +50,7 @@ export const StyledBoard = styled.div`
     height: 100vh;
     width: 600px;
     /* max-width: 900px; */
-    border: 10px solid brown;
+    border: ${props => `10px solid ${props.theme.border}`};
     margin: 0 auto;
     /* align-items: center; */
 `
