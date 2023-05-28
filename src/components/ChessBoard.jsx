@@ -1,5 +1,6 @@
 import { StyledSlot, StyledBoard, LabelCol, LabelRow } from "./styles/Board";
-import { useState } from "react";
+import { useEffect, useState, useRef } from "react";
+import React from "react";
 import bishopDark from "../assets/bishopDark.png";
 import bishopLight from "../assets/bishopLight.png";
 import kingDark from "../assets/kingDark.png";
@@ -23,9 +24,10 @@ const ChessSlot = (props) => {
         <StyledSlot 
             light={props.light} 
             // className={className }
-            // onClick={handleClick}
+            onClick={() => props.handleClick(props.id)}
+            image={props.image}
             >
-            {props.children}
+            {props.image && <img src={props.image} />}
         </StyledSlot>
     )
 }
@@ -52,9 +54,9 @@ function ChessBoard() {
                 const isLightSlot = (row + col) % 2 === 0;
                 const position = String.fromCharCode(97 + col) + (8 - row);
                 if (isLightSlot) {
-                chessArray.push(<ChessSlot key={position} light position={position} id={position}/>);
+                chessArray.push(<ChessSlot key={position} light handleClick={handleClick} id={position}/>);
                 } else {
-                chessArray.push(<ChessSlot key={position} position={position} id={position}/>);
+                chessArray.push(<ChessSlot key={position} handleClick={handleClick} id={position}/>);
                 }
             }
         }
@@ -66,42 +68,44 @@ function ChessBoard() {
     // can also be used in moving i think
     // maybe create a different function for removing image after
     // a piece has been moved ? 
+    // function updateBoard(array, id, imageSource) {
+    //     const updatedElements = array.map((element) => {
+    //     if (element.props.id === id) {
+    //         const { id, light } = element.props;
+    //         return (
+    //         <ChessSlot 
+    //             key={id} 
+    //             id={id} 
+    //             light={light}
+    //             handleClick={handleClick}
+    //             image={imageSource}
+    //         >
+    //             {/* <img src={imageSource} /> */}
+    //         </ChessSlot>
+    //         );
+    //     }
+    //     return element;
+    //     });  
+    //     return updatedElements;
+    // }
     function updateBoard(array, id, imageSource) {
         const updatedElements = array.map((element) => {
-        if (element.props.id === id) {
-            const { position, id, light } = element.props;
-            return (
-            <ChessSlot 
-                key={id} 
-                position={position} 
-                id={id} 
-                light={light}
-            >
-                <img src={imageSource} />
-            </ChessSlot>
-            );
-        }
-        return element;
-        });  
+          if (element.props.id === id) {
+            return React.cloneElement(element, { image: imageSource });
+          }
+          return element;
+        });
+      
         return updatedElements;
-    }
+      }
+      
  
     // initialize the chessboard to the default state
     function createDefaultBoard() {
         let chessArray = []
         chessArray = createBoard(chessArray)
-        // maybe move to another file that'll hold all the logic ?
-        chessArray = updateBoard(chessArray, "a8", rookDark)
-        // Update the remaining elements of the chessboard
-        chessArray = updateBoard(chessArray, "b8", bishopDark);
-        chessArray = updateBoard(chessArray, "c8", knightDark);
-        chessArray = updateBoard(chessArray, "d8", queenDark);
-        chessArray = updateBoard(chessArray, "e8", kingDark);
-        chessArray = updateBoard(chessArray, "f8", bishopDark);
-        chessArray = updateBoard(chessArray, "g8", knightDark);
-        chessArray = updateBoard(chessArray, "h8", rookDark);
 
-        // Update the second row (a7-h7) with the pawn pieces
+        // loop and update the pawn pieces
         for (let num = 0; num < 8; num++) {
         const char = String.fromCharCode(97 + num);
         chessArray = updateBoard(chessArray, char + "7", pawnDark);
@@ -112,6 +116,16 @@ function ChessBoard() {
             chessArray = updateBoard(chessArray, position, pawnLight);
         }
 
+        // Update the remaining elements of the chessboard
+        chessArray = updateBoard(chessArray, "a8", rookDark)
+        chessArray = updateBoard(chessArray, "b8", bishopDark);
+        chessArray = updateBoard(chessArray, "c8", knightDark);
+        chessArray = updateBoard(chessArray, "d8", queenDark);
+        chessArray = updateBoard(chessArray, "e8", kingDark);
+        chessArray = updateBoard(chessArray, "f8", bishopDark);
+        chessArray = updateBoard(chessArray, "g8", knightDark);
+        chessArray = updateBoard(chessArray, "h8", rookDark);
+
         chessArray = updateBoard(chessArray, "a1", rookLight);
         chessArray = updateBoard(chessArray, "b1", knightLight);
         chessArray = updateBoard(chessArray, "c1", bishopLight);
@@ -121,16 +135,59 @@ function ChessBoard() {
         chessArray = updateBoard(chessArray, "g1", knightLight);
         chessArray = updateBoard(chessArray, "h1", rookLight);
 
+        // chessArray = updateBoard(chessArray, "a8", "")
+
         return chessArray
     }
     
     // hook to keep track of the current state of the board
     const [currentBoard, setCurrentBoard] = useState(createDefaultBoard())
-    
 
-    function movePiece() {
-        console.log("hi")
+    // keep track of the selected slot
+    // const [selectedSlot, setSelectedSlot] = useState(null)
+    const slotRef = useRef(null)
+    
+    useEffect(() => {
+        setCurrentBoard(prevBoard => {
+            return prevBoard = updateBoard(prevBoard, "a8", "")
+        })
+        // console.log(selectedSlot)
+    },[])
+
+    function handleClick (slotId) {
+        // console.log(slotId)
+        const slotIndex = () => {
+            for (const slot of currentBoard) {
+            const { id } = slot.props
+            if (id === slotId) {
+                return currentBoard.indexOf(slot)
+            }
+        }}
+
+        const active = currentBoard[slotIndex()]
+        console.log(active.props.image)
+        // setCurrentBoard(prevBoard => {
+        //     return updateBoard(prevBoard, active.props.id, "")
+        // })
+        if (active.props.image) {
+            slotRef.current = active
+            // setSelectedSlot(active)
+            // console.log(selectedSlot)
+        } else if (slotRef.current && !active.props.image) {
+            console.log("reached")
+            setCurrentBoard(prevBoard => {
+                const { image, id } = slotRef.current.props
+                slotRef.current = null
+                console.log(id)
+                let newBoard = updateBoard(prevBoard, id, "")
+                newBoard = updateBoard(newBoard, active.props.id , image)
+                return newBoard
+            })
+        }
     }
+
+
+
 
 
     return (

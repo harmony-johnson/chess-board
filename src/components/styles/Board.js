@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 export const StyledSlot = styled.div`
     background-color: ${props => props.light ? props.theme.light : props.theme.alt};
-    background-image: ${props => props.image ? props.image : ""};
+    /* background-image: ${props => props.image ? props.image : ""}; */
     color: ${props => props.light ? "black" : "white"};
     cursor: ${props => props.children ? "pointer" : "default"};
     display: flex;
@@ -11,20 +11,23 @@ export const StyledSlot = styled.div`
     height: 12.1%;
     width: 12.05%;
 
-    &:hover,
+    &:hover {
+        border: ${props => props.image ? `5px solid ${props.theme.border}` : "none"};
+    }
+    /* &:hover,
     &:focus {
         border: ${
             (props) => {
-                if (props.children) {
+                if (props.image) {
                     return `5px solid ${props.theme.border}`
                 }
-            }};
-    }
+            }}; 
+    }*/
 
-    &.active {
+    /* &.active {
         border: ${props => `5px solid ${props.theme.border}`} ;
         background-color: lightblue;
-    }
+    } */
 `
 export const LabelCol = styled.div`
     background-color: ${props => props.theme.border};
