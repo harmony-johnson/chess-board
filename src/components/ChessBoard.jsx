@@ -13,6 +13,7 @@ import queenDark from "../assets/queenDark.png";
 import queenLight from "../assets/queenLight.png";
 import rookDark from "../assets/rookDark.png";
 import rookLight from "../assets/rookLight.png";
+import generateChessBoard from "./delete";
 
 // create a component for each individual chess slot
 const ChessSlot = (props) => {
@@ -31,6 +32,10 @@ const ChessSlot = (props) => {
 
 
 function ChessBoard() {
+
+    // const [board, setBoard] = useState(generateChessBoard())
+
+
 
     // function to create the board by pushing all needed pieces into
     // the array

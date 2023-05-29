@@ -1,5 +1,6 @@
 import { ThemeProvider } from "styled-components"
-import ChessBoard from "./components/ChessBoard"
+// import ChessBoard from "./components/ChessBoard"
+import ChessBoard  from "./components/Board"
 import GlobalStyle from "./components/styles/Global"
 
 const theme = {
@@ -16,6 +17,7 @@ function App() {
     <ThemeProvider theme={theme}>
       <>
         <GlobalStyle />
+        {/* <ChessBoard /> */}
         <ChessBoard />
         {/* <h1>Chess Board</h1> */}
       </>
