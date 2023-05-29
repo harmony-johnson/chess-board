@@ -16,9 +16,6 @@ import rookLight from "../assets/rookLight.png";
 
 // create a component for each individual chess slot
 const ChessSlot = (props) => {
-    // const [isActive, setIsActive] = useState(false)
-    // const handleClick = () => setIsActive(prevState => !prevState)
-    // const className = isActive ? "active" : ""
 
     return (
         <StyledSlot 
@@ -27,7 +24,7 @@ const ChessSlot = (props) => {
             onClick={() => props.handleClick(props.id)}
             image={props.image}
             >
-            {props.image && <img src={props.image} />}
+            {/* {props.image && <img src={props.image} />} */}
         </StyledSlot>
     )
 }
@@ -69,19 +66,21 @@ function ChessBoard() {
     // maybe create a different function for removing image after
     // a piece has been moved ? 
     // function updateBoard(array, id, imageSource) {
-    //     const updatedElements = array.map((element) => {
+    //     let updatedElements = []
+    //     updatedElements = array.map((element) => {
     //     if (element.props.id === id) {
     //         const { id, light } = element.props;
+    //         const newProps = {...element.props}
+    //         console.log(newProps)
+    //         imageSource ? newProps.image = imageSource : delete newProps.image 
+    //         console.log(newProps)
+    //         const allProps = {...newProps, key:id}
     //         return (
-    //         <ChessSlot 
-    //             key={id} 
-    //             id={id} 
-    //             light={light}
-    //             handleClick={handleClick}
-    //             image={imageSource}
-    //         >
-    //             {/* <img src={imageSource} /> */}
-    //         </ChessSlot>
+    //             <ChessSlot 
+    //                 {...allProps}
+    //             >
+    //             </ChessSlot>
+            
     //         );
     //     }
     //     return element;
@@ -89,15 +88,24 @@ function ChessBoard() {
     //     return updatedElements;
     // }
     function updateBoard(array, id, imageSource) {
-        const updatedElements = array.map((element) => {
-          if (element.props.id === id) {
-            return React.cloneElement(element, { image: imageSource });
-          }
-          return element;
-        });
-      
-        return updatedElements;
-      }
+        const getSlotIndex = () => {
+            for (const slot of array) {
+                const { id: slotId } = slot.props;
+                if (id === slotId) {
+                    console.log(id)
+                    return array.indexOf(slot)
+                }
+        }} 
+        const slotIndex = getSlotIndex()
+        const newProps = {...array[slotIndex].props, image:imageSource, key:id}
+        const newArray = [
+            ...array.slice(0,slotIndex),
+            <ChessSlot {...newProps}></ChessSlot>,
+            ...array.slice(slotIndex+1)
+        ]
+        return newArray
+    }
+    
       
  
     // initialize the chessboard to the default state
@@ -106,34 +114,34 @@ function ChessBoard() {
         chessArray = createBoard(chessArray)
 
         // loop and update the pawn pieces
-        for (let num = 0; num < 8; num++) {
-        const char = String.fromCharCode(97 + num);
-        chessArray = updateBoard(chessArray, char + "7", pawnDark);
-        }
+        // for (let num = 0; num < 8; num++) {
+        // const char = String.fromCharCode(97 + num);
+        // chessArray = updateBoard(chessArray, char + "7", pawnDark);
+        // }
 
-        for (let col = 0; col < 8; col++) {
-            const position = String.fromCharCode(97 + col) + "2";
-            chessArray = updateBoard(chessArray, position, pawnLight);
-        }
+        // for (let col = 0; col < 8; col++) {
+        //     const position = String.fromCharCode(97 + col) + "2";
+        //     chessArray = updateBoard(chessArray, position, pawnLight);
+        // }
 
         // Update the remaining elements of the chessboard
         chessArray = updateBoard(chessArray, "a8", rookDark)
-        chessArray = updateBoard(chessArray, "b8", bishopDark);
-        chessArray = updateBoard(chessArray, "c8", knightDark);
-        chessArray = updateBoard(chessArray, "d8", queenDark);
-        chessArray = updateBoard(chessArray, "e8", kingDark);
-        chessArray = updateBoard(chessArray, "f8", bishopDark);
-        chessArray = updateBoard(chessArray, "g8", knightDark);
-        chessArray = updateBoard(chessArray, "h8", rookDark);
+        // chessArray = updateBoard(chessArray, "b8", bishopDark);
+        // chessArray = updateBoard(chessArray, "c8", knightDark);
+        // chessArray = updateBoard(chessArray, "d8", queenDark);
+        // chessArray = updateBoard(chessArray, "e8", kingDark);
+        // chessArray = updateBoard(chessArray, "f8", bishopDark);
+        // chessArray = updateBoard(chessArray, "g8", knightDark);
+        // chessArray = updateBoard(chessArray, "h8", rookDark);
 
-        chessArray = updateBoard(chessArray, "a1", rookLight);
-        chessArray = updateBoard(chessArray, "b1", knightLight);
-        chessArray = updateBoard(chessArray, "c1", bishopLight);
-        chessArray = updateBoard(chessArray, "d1", queenLight);
-        chessArray = updateBoard(chessArray, "e1", kingLight);
-        chessArray = updateBoard(chessArray, "f1", bishopLight);
-        chessArray = updateBoard(chessArray, "g1", knightLight);
-        chessArray = updateBoard(chessArray, "h1", rookLight);
+        // chessArray = updateBoard(chessArray, "a1", rookLight);
+        // chessArray = updateBoard(chessArray, "b1", knightLight);
+        // chessArray = updateBoard(chessArray, "c1", bishopLight);
+        // chessArray = updateBoard(chessArray, "d1", queenLight);
+        // chessArray = updateBoard(chessArray, "e1", kingLight);
+        // chessArray = updateBoard(chessArray, "f1", bishopLight);
+        // chessArray = updateBoard(chessArray, "g1", knightLight);
+        // chessArray = updateBoard(chessArray, "h1", rookLight);
 
         // chessArray = updateBoard(chessArray, "a8", "")
 
@@ -148,9 +156,10 @@ function ChessBoard() {
     const slotRef = useRef(null)
     
     useEffect(() => {
-        setCurrentBoard(prevBoard => {
-            return prevBoard = updateBoard(prevBoard, "a8", "")
-        })
+        // setCurrentBoard(prevBoard => {
+        //     let newBoard = [...prevBoard]
+        //     return newBoard = updateBoard(newBoard, "a8", undefined)
+        // })
         // console.log(selectedSlot)
     },[])
 
@@ -177,12 +186,12 @@ function ChessBoard() {
             console.log("reached")
             setCurrentBoard(prevBoard => {
                 const { image, id } = slotRef.current.props
-                slotRef.current = null
                 console.log(id)
                 let newBoard = updateBoard(prevBoard, id, "")
                 newBoard = updateBoard(newBoard, active.props.id , image)
                 return newBoard
             })
+            slotRef.current = null
         }
     }
 

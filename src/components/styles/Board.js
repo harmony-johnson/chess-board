@@ -2,7 +2,10 @@ import styled from "styled-components";
 
 export const StyledSlot = styled.div`
     background-color: ${props => props.light ? props.theme.light : props.theme.alt};
-    /* background-image: ${props => props.image ? props.image : ""}; */
+    background-image: ${props => props.image ? `url(${props.image})` : ""};
+    background-repeat: no-repeat;
+    background-position: center;
+    /* background-size: cover; */
     color: ${props => props.light ? "black" : "white"};
     cursor: ${props => props.children ? "pointer" : "default"};
     display: flex;
@@ -14,6 +17,7 @@ export const StyledSlot = styled.div`
     &:hover {
         border: ${props => props.image ? `5px solid ${props.theme.border}` : "none"};
     }
+
     /* &:hover,
     &:focus {
         border: ${
